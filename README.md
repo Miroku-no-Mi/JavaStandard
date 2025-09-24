@@ -1,2 +1,1 @@
-# JavaStandard
-Student
+# JavaStandard Project
