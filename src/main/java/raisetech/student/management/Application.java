@@ -13,8 +13,8 @@ public class Application {
 		SpringApplication.run(Application.class, args);
 	}
 
-	@GetMapping("/goot")
-	public String goot(){
+	@GetMapping("/good")
+	public String good(){
 		return "Good Night!";
 	}
 }
