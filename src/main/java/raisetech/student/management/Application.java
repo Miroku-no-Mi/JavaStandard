@@ -14,19 +14,19 @@ public class Application {
     private String name = "Enami Kouji";
     private String age = "37";
 
-    private Map<String,String> student; //Mapの中身は空っぽ null
+    private Map<String, String> student; //Mapの中身は空っぽ null
 
-	public static void main(String[] args) {
-		SpringApplication.run(Application.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(Application.class, args);
+    }
 
-	@GetMapping("/studentInfo") // 登録済み Student
-	public Map<String, String> getStudentInfo(){
-		return student;
-	}
+    @GetMapping("/studentInfo") // 登録済み Student
+    public Map<String, String> getStudentInfo() {
+        return student;
+    }
 
     @PostMapping("/studentInfo") // 新規登録 Student
-    public String addStudentInfo(@RequestParam String name,@RequestParam String age) {
+    public String addStudentInfo(@RequestParam String name, @RequestParam String age) {
 
         if (student == null) { //　実装の度、ゼロに戻る　"初期化"
             student = new HashMap<>();
@@ -37,17 +37,17 @@ public class Application {
     }
 
     @PutMapping("/studentInfo") // データ更新
-    public String updatstudent(@RequestParam String oldName,@RequestParam String newName) {
-        if (student == null || !student.containsKey(oldName)){
+    public String updatstudent(@RequestParam String oldName, @RequestParam String newName) {
+        if (student == null || !student.containsKey(oldName)) {
             return oldName;
         }
 
         String age = student.remove(oldName);
-        student.put(newName,age);
+        student.put(newName, age);
         return oldName + "→" + newName;
 
-       }
     }
+}
 
 
 //修正
