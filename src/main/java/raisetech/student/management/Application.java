@@ -14,14 +14,17 @@ public class Application {
     private String name = "Enami Kouji";
     private String age = "37";
 
-    private Map<String, String> student; //Mapの中身は空っぽ null
+    private Map<String, String> student = new HashMap<>(); // studentの初期化
 
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
     }
 
     @GetMapping("/studentInfo") // 登録済み Student
-    public Map<String, String> getStudentInfo() {
+    public Object getStudentInfo() {
+        if  (student.isEmpty()){
+            return "登録された学生情報はありません。";
+        }
         return student;
     }
 
@@ -37,7 +40,7 @@ public class Application {
     }
 
     @PutMapping("/studentInfo") // データ更新
-    public String updatstudent(@RequestParam String oldName, @RequestParam String newName) {
+    public String updatestudent(@RequestParam String oldName, @RequestParam String newName) {
         if (student == null || !student.containsKey(oldName)) {
             return oldName;
         }
