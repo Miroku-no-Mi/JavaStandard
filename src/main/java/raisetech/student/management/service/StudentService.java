@@ -11,34 +11,46 @@ import java.util.List;
 @Service
 public class StudentService {
 
-    private StudentRepository repository;
+    private final StudentRepository repository;
 
     @Autowired
     public StudentService(StudentRepository repository) {
         this.repository = repository;
     }
 
-    //絞り込みをする。年齢が30代の人のみ抽出する。
+    /**
+     * 受講生一覧習得
+     */
     public List<Student> searchStudentList() {
-        List<Student> allStudents = repository.search();
-
-        //抽出したリストをコントローラーに返す。
-        return allStudents.stream()
-                .filter(student -> student.getAge() >= 30 && student.getAge() <= 39)
-                .toList();
+        return repository.search();
     }
 
+    /**
+     * コース一覧習得
+     */
 
-    //絞り込み検索で『Javaコース』のコース情報のみ抽出する。
     public List<StudentsCourses> searchStudentsCoursesList() {
+        return repository.searchStudentsCourses();
+    }
 
-        List<StudentsCourses> allCourses = repository.searchStudentsCourses();
+    /**
+     * 受講生を新規登録
+     */
+    public  void insertStudent(Student student){
+        repository.insert(student);
+    }
 
-        //抽出したリストをコントローラーに返す。
-        return allCourses.stream()
-                .filter(course -> "Javaコース".equals(course.getCourseName()))
-                .toList();
+    /**
+     * 受講生情報を更新
+     */
+    public void updateStudent(Student student) {
+        repository.update(student);
+    }
+
+    /** 受講生を論理削除（is_deleted = 1 にする） */
+    public void deleteStudent(String id) {
+        repository.deleteStudent(id);
+
     }
 }
-
 
