@@ -10,7 +10,7 @@ public class Student {
 
     private  String id;
     private  String name;
-    private  String kanaName;
+    private  String kana;
     private  String nickname;
     private  String email;
     private  String area;
