@@ -18,31 +18,23 @@ public class StudentService {
         this.repository = repository;
     }
 
-    /**
-     * 受講生一覧習得
-     */
+    /** 受講生一覧習得 */
     public List<Student> searchStudentList() {
         return repository.search();
     }
 
-    /**
-     * コース一覧習得
-     */
+    /** コース一覧習得 */
 
     public List<StudentsCourses> searchStudentsCoursesList() {
         return repository.searchStudentsCourses();
     }
 
-    /**
-     * 受講生を新規登録
-     */
+    /** 受講生を新規登録 */
     public  void insertStudent(Student student){
         repository.insert(student);
     }
 
-    /**
-     * 受講生情報を更新
-     */
+    /** 受講生情報を更新 */
     public void updateStudent(Student student) {
         repository.update(student);
     }
