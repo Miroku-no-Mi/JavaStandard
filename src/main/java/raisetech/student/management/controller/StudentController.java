@@ -3,6 +3,7 @@ package raisetech.student.management.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import raisetech.student.management.controller.converter.StudentConverter;
 import raisetech.student.management.domain.StudentDetail;
@@ -10,9 +11,8 @@ import raisetech.student.management.service.StudentService;
 import raisetech.student.management.data.Student;
 import raisetech.student.management.data.StudentsCourses;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.UUID;
 
 @Controller
 public class StudentController {
@@ -28,15 +28,30 @@ public class StudentController {
 
 
     @GetMapping("/studentList")
-    public String  getStudentList(Model model) {
+    public String getStudentList(Model model) {
         List<Student> students = service.searchStudentList();
         List<StudentsCourses> studentsCourses = service.searchStudentsCoursesList();
-        model.addAttribute ("studentList", converter.convertStudentDetails(students, studentsCourses));
+        model.addAttribute("studentList", converter.convertStudentDetails(students, studentsCourses));
         return "studentList";
     }
 
-    @GetMapping("/courses")
+    @GetMapping("/StudentsCoursesList")
     public List<StudentsCourses> getStudentsCoursesList() {
         return service.searchStudentsCoursesList();
     }
+    @GetMapping("/newStudent")
+    public String newStudent(Model model){
+        model.addAttribute("studentDetail",new StudentDetail());
+        return "registerStudent";
+    }
+
+    @PostMapping("/registerStudent")
+    public String registerStudent(@ModelAttribute StudentDetail studentDetail) {
+
+    service.registerStudentWithCourse(studentDetail);
+
+        return "redirect:/studentList";
+    }
 }
+
+
