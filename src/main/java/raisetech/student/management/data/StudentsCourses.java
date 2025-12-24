@@ -11,6 +11,6 @@ public class StudentsCourses {
     private String id;
     private String studentId;
     private String courseName;
-    private LocalDateTime coursesStartAt;
-    private LocalDateTime coursesEndAt;
+    private LocalDateTime courseStartAt;
+    private LocalDateTime courseEndAt;
 }

@@ -27,17 +27,26 @@ public interface StudentRepository {
     /**
      *  新規登録（INSERT)
      */
-    @Insert("INSERT INTO students " +
-            "(id, name, kana, nickname, email, area, sex, remark, is_deleted) " +
-            "VALUES" +
-            "(#{id}, #{name}, #{kana}, #{nickname}, #{email})")
+    @Insert("""
+            INSERT INTO students
+            (id, name, kana, email, is_deleted)
+            VALUES
+            (#{id},#{name},#{kana},#{email},#{isDeleted})
+            """)
     void insert (Student student);
+
+    @Insert("""
+            INSERT INTO students_courses
+            (id, student_id, course_name, course_start_at, course_end_at)
+            VALUES
+            (#{id}, #{studentId}, #{courseName}, #{courseStartAt}, #{courseEndAt})
+            """)
+            void insertStudentsCourse(StudentsCourses course);
 
     /**
      *  データ更新 (UPDATE)
      *  remark と is_deleted を更新できる
      */
-
     @Update("UPDATE students SET " +
         "name = #{name}, " +
         "kana = #{kana}, " +
