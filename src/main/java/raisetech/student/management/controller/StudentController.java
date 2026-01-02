@@ -4,15 +4,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import raisetech.student.management.controller.converter.StudentConverter;
-import raisetech.student.management.domain.StudentDetail;
-import raisetech.student.management.service.StudentService;
 import raisetech.student.management.data.Student;
 import raisetech.student.management.data.StudentsCourses;
+import raisetech.student.management.domain.StudentDetail;
+import raisetech.student.management.service.StudentService;
 
+import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
 
 @Controller
 public class StudentController {
@@ -41,15 +44,34 @@ public class StudentController {
     }
     @GetMapping("/newStudent")
     public String newStudent(Model model){
-        model.addAttribute("studentDetail",new StudentDetail());
+        StudentDetail studentDetail = new StudentDetail();
+        studentDetail.setStudentsCourses(Arrays.asList(new StudentsCourses()));
+        model.addAttribute("studentDetail", studentDetail);
         return "registerStudent";
     }
 
+    @GetMapping("/updateStudent")
+    public String showUpdateStudent(
+        @RequestParam Integer id, Model model){StudentDetail studentDetail = service.searchStudentDetailById(id);
+        model.addAttribute("studentDetail", studentDetail);
+        return "updateStudent";
+    }
+
     @PostMapping("/registerStudent")
-    public String registerStudent(@ModelAttribute StudentDetail studentDetail) {
+    public String registerStudent(@ModelAttribute StudentDetail studentDetail, BindingResult result) {
+        if (result.hasErrors()){
+            return "registerStudent";
+        }
+        service.registerStudent(studentDetail);
+        return "redirect:/studentList";
+    }
 
-    service.registerStudentWithCourse(studentDetail);
-
+    @PostMapping("/updateStudent")
+    public String updateStudent(@ModelAttribute StudentDetail studentDetail, BindingResult result) {
+        if (result.hasErrors()){
+            return "updateStudent";
+        }
+        service.updateStudent(studentDetail);
         return "redirect:/studentList";
     }
 }
