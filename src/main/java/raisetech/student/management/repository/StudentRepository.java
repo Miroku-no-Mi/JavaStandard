@@ -7,16 +7,19 @@ import java.util.List;
 
 /**
  * 受講生情報を扱うリポジトリ。
- *
  * 全件検索や単一条件での検索、コース情報の検索が行えるクラスです。
  */
 
 @Mapper
 public interface StudentRepository {
 
-    /**
-     * 削除されていない受講生を全件検索します。
-     */
+    @Select("SELECT * FROM students WHERE id = #{id}")
+    Student searchStudentById(Integer id);
+
+    @Select("SELECT * FROM students_courses WHERE student_id = #{studentId}")
+    List<StudentsCourses> searchStudentsCoursesByStudentId(Integer studentId);
+
+    //削除されていない受講生を全件検索します。
 
     @Select("SELECT * FROM students")
     List<Student> search();
@@ -24,43 +27,35 @@ public interface StudentRepository {
     @Select("SELECT * FROM students_courses")
     List<StudentsCourses> searchStudentsCourses();
 
-    /**
-     *  新規登録（INSERT)
-     */
-    @Insert("""
-            INSERT INTO students
-            (id, name, kana, email, is_deleted)
-            VALUES
-            (#{id},#{name},#{kana},#{email},#{isDeleted})
-            """)
-    void insert (Student student);
 
-    @Insert("""
-            INSERT INTO students_courses
-            (id, student_id, course_name, course_start_at, course_end_at)
-            VALUES
-            (#{id}, #{studentId}, #{courseName}, #{courseStartAt}, #{courseEndAt})
-            """)
-            void insertStudentsCourse(StudentsCourses course);
+    // 新規登録（INSERT)
 
-    /**
-     *  データ更新 (UPDATE)
-     *  remark と is_deleted を更新できる
-     */
-    @Update("UPDATE students SET " +
-        "name = #{name}, " +
-        "kana = #{kana}, " +
-        "nickname = #{nickname}, " +
-        "email = #{email}, " +
-        "area = #{area}, " +
-        "age = #{age}, " +
-        "sex = #{sex}, " +
-        "remark = #{remark}," +
-        "is_deleted = #{isDeleted} " +
-        "WHERE id = #{id}" )
-    void update(Student student);
+    @Insert("INSERT INTO students(name, kana, nickname, email, area, age, sex, remark, is_deleted)"
+        + "VALUES(#{name}, #{kana}, #{nickname}, #{email}, #{area}, #{age}, #{sex}, #{remark}, false)")
 
-    @Update("UPDATE students SET is_deleted = 1 WHERE id = #{id}")
-    void deleteStudent(String id);
+    @Options(useGeneratedKeys = true, keyProperty = "id")
+    void registerStudent(Student student);
+
+    @Insert("INSERT INTO students_courses( student_id, course_name, course_start_at, course_end_at) " +
+            "VALUES(#{studentId}, #{courseName}, #{courseStartAt}, #{courseEndAt})")
+
+    @Options(useGeneratedKeys = true, keyProperty = "id")
+    void registerStudentsCourses(StudentsCourses studentsCourses);
+
+    @Update("""
+        UPDATE students
+        SET
+        name=#{name},
+        kana=#{kana},
+        email=#{email},
+        area=#{area},
+        age=#{age},
+        sex=#{sex},
+        remark=#{remark}
+        WHERE id = #{id}
+        """)
+    void updateStudent(Student student);
+
+
 }
 

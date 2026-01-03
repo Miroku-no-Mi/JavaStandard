@@ -9,9 +9,7 @@ import raisetech.student.management.repository.StudentRepository;
 import raisetech.student.management.domain.StudentDetail;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @Service
 public class StudentService {
@@ -22,66 +20,42 @@ public class StudentService {
     public StudentService(StudentRepository repository) {
         this.repository = repository;
     }
-
-    /** 受講生一覧習得 */
+    /**
+     * 受講生一覧習得
+     */
     public List<Student> searchStudentList() {
         return repository.search();
     }
-
-    /** コース一覧習得 */
-
+    /**
+     * コース一覧習得
+     */
     public List<StudentsCourses> searchStudentsCoursesList() {
         return repository.searchStudentsCourses();
     }
+    // idを受け取って、一人分のStudentDetailを返す。
+    public  StudentDetail searchStudentDetailById(Integer id){
+        Student student = repository.searchStudentById(id);
+        List<StudentsCourses> courses =repository.searchStudentsCoursesByStudentId(id);
+        StudentDetail detail = new StudentDetail();
+        detail.setStudent(student);
+        detail.setStudentsCourses(courses);
 
-    /** 受講生を新規登録 */
-    public  void insertStudent(Student student){
-        repository.insert(student);
+        return detail;
     }
 
-    /** 受講生情報を更新 */
-    public void updateStudent(Student student) {
-        repository.update(student);
-    }
-
-    /** 受講生を論理削除（is_deleted = 1 にする） */
-    public void deleteStudent(String id) {
-        repository.deleteStudent(id);
-    }
-    // 複合登録
     @Transactional
-    public void registerStudentWithCourse(StudentDetail studentDetail) {
-
-        if (studentDetail.getStudent() ==null){
-            studentDetail.setStudent(new Student());
+    public void registerStudent(StudentDetail studentDetail) {
+        repository.registerStudent(studentDetail.getStudent());
+        // TODO:コース情報登録も行う。
+        for (StudentsCourses studentsCourse : studentDetail.getStudentsCourses()) {
+            studentsCourse.setStudentId(studentDetail.getStudent().getId());
+            studentsCourse.setCourseStartAt(LocalDateTime.now());
+            studentsCourse.setCourseEndAt(LocalDateTime.now().plusYears(1));
+            repository.registerStudentsCourses(studentsCourse);
         }
-
-        if (studentDetail.getStudentsCourses() ==null
-                || studentDetail.getStudentsCourses().isEmpty()){
-
-            StudentsCourses course = new StudentsCourses();
-            course.setCourseName("未設定コース");
-
-            List<StudentsCourses> list = new ArrayList<>();
-            list.add(course);
-            studentDetail.setStudentsCourses(list);
-        }
-        Student student = studentDetail.getStudent();
-        student.setId(UUID.randomUUID().toString());
-        student.setDeleted(false);
-        student.setKana(" ");
-        student.setEmail("dummy@example.com");
-
-        repository.insert(student);
-
-        for (StudentsCourses courses : studentDetail.getStudentsCourses()){
-
-            courses.setId(UUID.randomUUID().toString());
-
-            courses.setStudentId(student.getId());
-            courses.setCourseStartAt(LocalDateTime.now());
-            courses.setCourseEndAt(LocalDateTime.now().plusYears(1));
-            repository.insertStudentsCourse(courses);
-        }
+    }
+    @Transactional
+    public void updateStudent(StudentDetail studentDetail){
+        repository.updateStudent(studentDetail.getStudent());
     }
 }
