@@ -14,39 +14,34 @@ import java.util.List;
 @Service
 public class StudentService {
 
-    private final StudentRepository repository;
+    private StudentRepository repository;
 
     @Autowired
     public StudentService(StudentRepository repository) {
         this.repository = repository;
     }
-    /**
-     * 受講生一覧習得
-     */
+
     public List<Student> searchStudentList() {
         return repository.search();
     }
-    /**
-     * コース一覧習得
-     */
-    public List<StudentsCourses> searchStudentsCoursesList() {
-        return repository.searchStudentsCourses();
-    }
-    // idを受け取って、一人分のStudentDetailを返す。
-    public  StudentDetail searchStudentDetailById(Integer id){
-        Student student = repository.searchStudentById(id);
-        List<StudentsCourses> courses =repository.searchStudentsCoursesByStudentId(id);
-        StudentDetail detail = new StudentDetail();
-        detail.setStudent(student);
-        detail.setStudentsCourses(courses);
 
-        return detail;
+    public StudentDetail searchStudent(String id) {
+        Student student = repository.searchStudent(id);
+        List<StudentsCourses> studentsCourses = repository.searchStudentsCourses(student.getId());
+        StudentDetail studentDetail = new StudentDetail();
+        studentDetail.setStudent(student);
+        studentDetail.setStudentsCourses(studentsCourses);
+        return studentDetail;
     }
+
+    public List<StudentsCourses> searchStudentsCoursesList() {
+        return repository.searchStudentsCoursesList();
+    }
+
 
     @Transactional
     public void registerStudent(StudentDetail studentDetail) {
         repository.registerStudent(studentDetail.getStudent());
-        // TODO:コース情報登録も行う。
         for (StudentsCourses studentsCourse : studentDetail.getStudentsCourses()) {
             studentsCourse.setStudentId(studentDetail.getStudent().getId());
             studentsCourse.setCourseStartAt(LocalDateTime.now());
@@ -57,5 +52,8 @@ public class StudentService {
     @Transactional
     public void updateStudent(StudentDetail studentDetail){
         repository.updateStudent(studentDetail.getStudent());
+        for (StudentsCourses studentsCourse : studentDetail.getStudentsCourses()){
+            repository.updateStudentsCourses(studentsCourse);
+        }
     }
 }
