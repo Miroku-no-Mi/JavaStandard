@@ -9,7 +9,7 @@ import java.util.List;
 public interface StudentRepository {
 
 
-    @Select("SELECT * FROM students WHERE is_deleted = false")
+    @Select("SELECT * FROM students")
     List<Student> search();
 
     @Select("SELECT * FROM students WHERE id = #{id}")
