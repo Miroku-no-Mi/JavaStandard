@@ -1,10 +1,9 @@
 package raisetech.student.management.data;
 
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
-import raisetech.student.management.data.Student;
-import raisetech.student.management.data.StudentsCourses;
-import java.util.List;
 
 @Getter
 @Setter
@@ -14,6 +13,7 @@ public class Student {
     private  String name;
     private  String kanaName;
     private  String nickname;
+    @NotBlank(message = "emailを入力してください。")
     private  String email;
     private  String area;
     private  int age;
