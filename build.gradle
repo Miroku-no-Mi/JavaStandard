@@ -30,9 +30,13 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	//Thymeleaf
     // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-thymeleaf
-    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf:4.0.0'
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	// Validation
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+	//OpenAPI Generator
+	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.0'
+
     //便利機能、ユーティリティー
     implementation 'org.apache.commons:commons-lang3:3.19.0'
 
