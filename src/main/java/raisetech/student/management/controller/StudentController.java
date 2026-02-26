@@ -1,17 +1,16 @@
 package raisetech.student.management.controller;
 
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import raisetech.student.management.domain.StudentDetail;
-import raisetech.student.management.domain.StudentSearchCondition;
-import raisetech.student.management.exception.StudentNotFoundException;
+import raisetech.student.management.exception.TestException;
 import raisetech.student.management.service.StudentService;
-import jakarta.validation.constraints.Size;
+
 import java.util.List;
 
 /**
@@ -34,9 +33,8 @@ public class StudentController {
      * @return 受講生詳細一覧（全件）
      */
     @GetMapping("/studentList")
-    public List<StudentDetail> getStudentList() {
-
-        return service.searchStudentList();
+    public List<StudentDetail> getStudentList() throws TestException {
+        throw new TestException("エラーが発生しました。");
     }
 
     /**
@@ -46,8 +44,8 @@ public class StudentController {
      * @return 受講生
      */
     @GetMapping("/student/{id}")
-    public StudentDetail getStudent(@PathVariable @Size(min=1,max=3) String id) {
-
+    public StudentDetail getStudent(
+            @PathVariable @NotBlank @Pattern(regexp = "^\\d+$") String id) {
         return service.searchStudent(id);
     }
 
@@ -57,7 +55,8 @@ public class StudentController {
      * @return 実行結果
      */
     @PostMapping("/registerStudent")
-    public ResponseEntity<StudentDetail> registerStudent(@RequestBody @Valid StudentDetail studentDetail) {
+    public ResponseEntity<StudentDetail> registerStudent
+    (@RequestBody @Valid StudentDetail studentDetail) {
         StudentDetail responseStudentDetail = service.registerStudent(studentDetail);
         return ResponseEntity.ok(responseStudentDetail);
     }
@@ -74,10 +73,7 @@ public class StudentController {
         return ResponseEntity.ok("更新処理が成功しました。");
     }
 
-    @ExceptionHandler(StudentNotFoundException.class)
-    public ResponseEntity<String>handleStudentNotFound(StudentNotFoundException exception){
-        return ResponseEntity.status(404).body(exception.getMessage());
-    }
+
 }
 
 

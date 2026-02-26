@@ -6,7 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import raisetech.student.management.controller.converter.StudentConverter;
 import raisetech.student.management.data.Student;
 import raisetech.student.management.data.StudentCourse;
-import raisetech.student.management.exception.StudentNotFoundException;
+import raisetech.student.management.exception.TestException;
 import raisetech.student.management.repository.StudentRepository;
 import raisetech.student.management.domain.StudentDetail;
 import java.time.LocalDateTime;
@@ -49,8 +49,8 @@ public class StudentService {
     public StudentDetail searchStudent(String id) {
         Student student = repository.searchStudent(id);
 
-        if (student == null) {
-            throw new StudentNotFoundException("存在しないidです。");
+        if(student == null){
+            throw new TestException("指定した受講生が存在しません。");
         }
         List<StudentCourse> studentCourse = repository.searchStudentCourse(student.getId());
         return new StudentDetail(student,studentCourse);
