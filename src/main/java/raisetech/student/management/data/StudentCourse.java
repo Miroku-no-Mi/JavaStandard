@@ -25,9 +25,9 @@ public class StudentCourse {
     @NotBlank
     private String courseName;
 
-    @NotBlank
+    @NotNull
     private LocalDateTime courseStartAt;
 
-    @NotBlank
+    @NotNull
     private LocalDateTime courseEndAt;
 }
